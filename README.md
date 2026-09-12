@@ -2,7 +2,8 @@
 
 Repositorio **oficial de código** del libro **_El Precio de la Incertidumbre:
 Valuación de opciones con Python_** (Liber Jaime Merlos). Aquí vive, listo para correr,
-el código de los ejemplos del libro: el módulo `opciones.py` y un script por capítulo.
+el código de los ejemplos del libro: el módulo `opciones.py`, un script por capítulo y
+los dashboards interactivos.
 
 > Este repo contiene **solo el código de los ejercicios**. El **manuscrito del libro no
 > se publica aquí** ni en ningún repo público.
@@ -11,7 +12,8 @@ el código de los ejemplos del libro: el módulo `opciones.py` y un script por c
 ```bash
 pip install -r requirements.txt
 ```
-Solo necesitas `numpy` (y `matplotlib` para las gráficas).
+Solo necesitas `numpy` (y `matplotlib` para las gráficas). `streamlit` y `pandas` son
+opcionales, para los dashboards.
 
 ## Uso (idéntico a los fragmentos del libro)
 ```python
@@ -48,23 +50,38 @@ precio-de-la-incertidumbre/
 │   ├── cap06_griegas.py           ├── cap11_caso_mexico.py
 │   ├── cap07_montecarlo.py        ├── cap12_exoticas.py
 │   ├── cap08_americanas.py        └── cap13_opciones_reales.py
-├── apps/              # dashboards interactivos (streamlit run apps/<app>.py)
-│   ├── dashboard_griegas.py       # explorador de griegas (Cap. 6)
-│   └── dashboard_valuacion.py     # tres motores + sensibilidad σ×r (Cap. 11)
+├── apps/              # dashboards interactivos del libro (Streamlit)
+│   ├── app.py                     # hub: portada + navegación entre dashboards
+│   ├── dashboard_griegas.py       # P&L con cono ±1σ, escaleras de griegas, cadena (Cap. 6)
+│   ├── dashboard_valuacion.py     # tres motores, frontera de ejercicio, convergencia, sonrisa (Cap. 11)
+│   ├── componentes.py             # marca del libro, selector de tema, paneles
+│   ├── graficos.py                # cálculos y figuras (matplotlib puro)
+│   └── tema.py                    # paleta validada, modo claro/oscuro
+├── .streamlit/config.toml         # tema visual (oscuro por defecto)
 ├── requirements.txt
 └── LICENSE            # MIT (puedes reutilizar el código citando la fuente)
 ```
 
 ## Dashboards interactivos
 ```bash
-pip install streamlit
-streamlit run apps/dashboard_griegas.py
+pip install streamlit pandas
+streamlit run apps/app.py                  # hub con los dos dashboards
+streamlit run apps/dashboard_griegas.py    # o cada uno por separado
 streamlit run apps/dashboard_valuacion.py
 ```
+Los dashboards son la versión interactiva de las tablas y figuras del libro, con las
+vistas que usan las mesas de opciones: P&L con cono de ±1σ, escaleras de griegas por
+vencimiento, cadena de opciones, frontera de ejercicio óptimo, convergencia de los tres
+motores y sonrisa de volatilidad a partir de cotizaciones editables. Mismos motores de
+`opciones.py`, mismos parámetros que se declaran en cada capítulo; vol y tasa en % anual.
+Abren en modo oscuro (superficie casi negra, acento ámbar); el selector de la barra
+lateral cambia a modo claro. La paleta está validada para daltonismo
+(protanopia/deuteranopia) y contraste.
 
 ## Cómo se relaciona con el libro
 El libro muestra **conceptos, fragmentos breves y resultados**; el **código completo y
-reproducible** vive aquí. Cada capítulo del libro remite al script correspondiente.
+reproducible** vive aquí. Cada capítulo del libro remite al script correspondiente y
+cada dashboard indica el capítulo que lo explica.
 
 ## Licencia y aviso
 Código bajo licencia **MIT**. Material **educativo**; no es asesoría de inversión.

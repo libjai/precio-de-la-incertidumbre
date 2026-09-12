@@ -1,3 +1,4 @@
 numpy>=1.24
 matplotlib>=3.7
-streamlit>=1.30   # opcional, solo para apps/ (dashboards)
+pandas>=1.5        # tablas de los dashboards (apps/)
+streamlit>=1.49    # opcional, solo para apps/ (dashboards)

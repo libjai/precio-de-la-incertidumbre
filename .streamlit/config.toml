@@ -1,0 +1,21 @@
+# Tema por defecto de los dashboards — El Precio de la Incertidumbre (modo oscuro).
+# Superficie casi negra y acento ámbar, como en las terminales financieras. El lector puede
+# cambiar a modo claro desde la barra lateral (apps/componentes.py). Los valores de ambos
+# modos viven en apps/tema.py y deben mantenerse sincronizados con este archivo.
+[theme]
+base = "dark"
+primaryColor = "#F5A623"
+backgroundColor = "#0E1117"
+secondaryBackgroundColor = "#161B22"
+textColor = "#F3F4F6"
+linkColor = "#7FA6F0"
+borderColor = "#262C36"
+baseRadius = "0.6rem"
+showWidgetBorder = true
+font = "system-ui, -apple-system, 'Segoe UI', sans-serif"
+codeFont = "'Cascadia Code', Consolas, 'Courier New', monospace"
+chartCategoricalColors = ["#3A74DC", "#E0702E", "#0F9E86", "#8462D6", "#B8860B"]
+chartSequentialColors = ["#072c72", "#144093", "#2255b4", "#396ccd", "#5a86d6", "#7b9fde", "#9db7e6", "#bfd0ed", "#e2e8f2"]
+
+[browser]
+gatherUsageStats = false

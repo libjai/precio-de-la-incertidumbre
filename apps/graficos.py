@@ -18,8 +18,8 @@ from opciones import BlackScholes, BinomialTree, LongstaffSchwartz
 from tema import paleta, color_tipo, cmap, figura, linea_referencia, marcador
 
 GRIEGAS = {"price": "Precio", "delta": "Delta Δ", "gamma": "Gamma Γ",
-           "vega": "Vega ν (por 1 pt de vol)", "theta": "Theta Θ (por día)",
-           "rho": "Rho ρ (por 1 pt de tasa)"}
+           "vega": "Vega ν (por 1 punto porcentual de vol)", "theta": "Theta Θ (por día)",
+           "rho": "Rho ρ (por 1 punto porcentual de tasa)"}
 _ESCALA = {"vega": 1 / 100, "rho": 1 / 100, "theta": 1 / 365}
 _PARES = ("delta", "gamma", "vega", "theta")
 MOTORES = {"BSM": "Black-Scholes-Merton (europea)",
@@ -62,7 +62,16 @@ def _biseccion(f, lo, hi, tol=1e-9, itmax=200):
 
 
 def etiqueta_plazo(T):
-    return f"{T * 365:.0f} d" if T < 45 / 365 else f"{T:.2f} a"
+    """Plazo legible: días si es corto, años con días entre paréntesis si es largo."""
+    return f"{T * 365:.0f} días" if T < 45 / 365 else f"{T:.2f} años ({T * 365:.0f} días)"
+
+
+def etiqueta_vencimiento(v, T):
+    """Nombre de un vencimiento de la escalera en términos de T (el plazo configurado)."""
+    for frac, nombre in ((1.0, "T"), (0.5, "T/2"), (0.25, "T/4")):
+        if abs(v - T * frac) < 1e-9:
+            return f"{nombre} = {etiqueta_plazo(v)}"
+    return etiqueta_plazo(v)
 
 
 # ----------------------------------------------------------------------------- cálculos
@@ -285,23 +294,23 @@ def mapa_tasa_implicita(S, K, sig, T, tipo, n=9, r_lo=-0.10, r_hi=0.60):
 
 # ------------------------------------------------------------------------------ figuras
 
-def fig_payoff(modo, d, S, K, T, tipo, lectura):
-    """Diagrama de P&L: al vencimiento (con zonas de ganancia/pérdida), hoy y a T/2,
-    más el cono de ±1σ del subyacente."""
+def fig_payoff(modo, d, S, K, T, tipo, lectura, factor=1.0, escala="por acción", moneda="MXN"):
+    """Diagrama de P&L: al vencimiento (con zonas de ganancia/pérdida), hoy y a mitad del
+    plazo, más el cono de ±1σ del subyacente. `factor` escala de por acción a contrato o
+    posición."""
     p = paleta(modo)
     c, e = p["chrome"], p["estado"]
     col = color_tipo(modo, tipo)
     Sx = d["Sx"]
+    venc, hoy, mitad = d["vencimiento"] * factor, d["hoy"] * factor, d["mitad"] * factor
     fig, ax = figura(modo, 9, 4.4)
-    ax.fill_between(Sx, d["vencimiento"], 0, where=d["vencimiento"] >= 0,
-                    color=e["ganancia"], alpha=0.12, lw=0)
-    ax.fill_between(Sx, d["vencimiento"], 0, where=d["vencimiento"] < 0,
-                    color=e["perdida"], alpha=0.12, lw=0)
+    ax.fill_between(Sx, venc, 0, where=venc >= 0, color=e["ganancia"], alpha=0.12, lw=0)
+    ax.fill_between(Sx, venc, 0, where=venc < 0, color=e["perdida"], alpha=0.12, lw=0)
     ax.axvspan(lectura["S_lo"], lectura["S_hi"], color=col, alpha=0.07, lw=0,
-               label="±1σ al vencimiento")
-    ax.plot(Sx, d["vencimiento"], color=c["secundaria"], lw=1.8, label="al vencimiento")
-    ax.plot(Sx, d["mitad"], color=col, lw=1.5, alpha=0.5, label=f"a T/2 ({etiqueta_plazo(T / 2)})")
-    ax.plot(Sx, d["hoy"], color=col, lw=2.2, label="hoy")
+               label="rango ±1σ del spot al vencimiento")
+    ax.plot(Sx, venc, color=c["secundaria"], lw=1.8, label=f"al vencimiento, T = {etiqueta_plazo(T)}")
+    ax.plot(Sx, mitad, color=col, lw=1.5, alpha=0.5, label=f"a mitad del plazo, T/2 = {etiqueta_plazo(T / 2)}")
+    ax.plot(Sx, hoy, color=col, lw=2.2, label="hoy")
     ax.axhline(0, color=c["eje"], lw=0.8)
     linea_referencia(ax, modo, K, f"K = {K:g}")
     marcador(ax, modo, S, 0.0, col)
@@ -312,14 +321,14 @@ def fig_payoff(modo, d, S, K, T, tipo, lectura):
         ax.plot([eq], [0], marker="|", ms=12, color=c["tinta"], mew=1.5)
         ax.annotate(f"equilibrio {eq:.2f}", xy=(eq, 0), xytext=(0, -16), textcoords="offset points",
                     ha="center", fontsize=9, color=c["secundaria"])
-    ax.set_title(f"P&L del {tipo} largo comprado a {d['prima']:.4f}")
-    ax.set_xlabel("Spot al evaluar")
-    ax.set_ylabel("P&L por unidad")
+    ax.set_title(f"P&L del {tipo} largo, {escala} · prima pagada {d['prima'] * factor:,.2f} {moneda}")
+    ax.set_xlabel(f"Spot al evaluar ({moneda} por acción)")
+    ax.set_ylabel(f"P&L {escala} ({moneda})")
     ax.legend(loc="upper left" if tipo == "call" else "upper right")
     return fig
 
 
-def fig_escaleras(modo, Sx, vencs, data, S, K, tipo):
+def fig_escaleras(modo, Sx, vencs, data, S, K, tipo, T):
     """Cuatro paneles (delta, gamma, vega, theta) vs. spot, una línea por vencimiento."""
     p = paleta(modo)
     c = p["chrome"]
@@ -328,14 +337,14 @@ def fig_escaleras(modo, Sx, vencs, data, S, K, tipo):
     for ax, g in zip(axes.ravel(), _PARES):
         for k, (v, y) in enumerate(zip(vencs, data[g])):
             ax.plot(Sx, y, color=ord_[min(k, len(ord_) - 1)], lw=2.0 if k == len(vencs) - 1 else 1.6,
-                    label=etiqueta_plazo(v))
+                    label=etiqueta_vencimiento(v, T))
         ax.axvline(K, color=c["eje"], lw=1.0)
         ax.axvline(S, color=c["apagada"], lw=0.8)
         if g in ("delta", "theta"):
             ax.axhline(0, color=c["eje"], lw=0.8)
         ax.set_title(GRIEGAS[g])
         ax.set_xlabel("Spot S")
-    axes[0, 0].legend(title="vencimiento", loc="best", title_fontsize=9)
+    axes[0, 0].legend(title="tiempo al vencimiento", loc="best", title_fontsize=9)
     axes[0, 0].annotate("K", xy=(K, 1.0), xycoords=("data", "axes fraction"), xytext=(4, -2),
                         textcoords="offset points", va="top", fontsize=9, color=c["apagada"])
     axes[0, 0].annotate("S", xy=(S, 0.0), xycoords=("data", "axes fraction"), xytext=(4, 2),

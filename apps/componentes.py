@@ -13,7 +13,7 @@ from tema import MODOS, paleta
 
 LIBRO = {
     "titulo": "El Precio de la Incertidumbre",
-    "subtitulo": "Valuación de opciones con Python",
+    "subtitulo": "Valuación avanzada de opciones con Python: teoría, simulación y machine learning",
     "autor": "Liber Jaime Merlos",
     "edicion": "Primera edición · 2026",
     "repo": "https://github.com/libjai/precio-de-la-incertidumbre",

@@ -1,7 +1,8 @@
 # El Precio de la Incertidumbre — código de ejercicios
 
-Repositorio **oficial de código** del libro **_El Precio de la Incertidumbre:
-Valuación de opciones con Python_** (Liber Jaime Merlos). Aquí vive, listo para correr,
+Repositorio **oficial de código** del libro **_El Precio de la Incertidumbre.
+Valuación avanzada de opciones con Python: teoría, simulación y machine learning_**
+(Liber Jaime Merlos). Aquí vive, listo para correr,
 el código de los ejemplos del libro: el módulo `opciones.py`, un script por capítulo y
 los dashboards interactivos.
 
@@ -73,7 +74,14 @@ Los dashboards son la versión interactiva de las tablas y figuras del libro, co
 vistas que usan las mesas de opciones: P&L con cono de ±1σ, escaleras de griegas por
 vencimiento, cadena de opciones, frontera de ejercicio óptimo, convergencia de los tres
 motores y sonrisa de volatilidad a partir de cotizaciones editables. Mismos motores de
-`opciones.py`, mismos parámetros que se declaran en cada capítulo; vol y tasa en % anual.
+`opciones.py`, mismos parámetros que se declaran en cada capítulo.
+
+Convenciones de mercado: volatilidad y tasa en % anual; vega y rho por 1 punto porcentual;
+theta por día calendario. Las cifras se muestran **por acción** (como se cotiza la prima),
+**por contrato de 100 acciones** (tamaño del contrato de opción sobre acciones en MexDer) y
+**por posición** (número de contratos que eliges). Cada gráfico lleva un recuadro "Cómo leer"
+y la barra lateral incluye un glosario para quien empieza.
+
 Abren en modo oscuro (superficie casi negra, acento ámbar); el selector de la barra
 lateral cambia a modo claro. La paleta está validada para daltonismo
 (protanopia/deuteranopia) y contraste.

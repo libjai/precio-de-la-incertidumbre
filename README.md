@@ -46,11 +46,14 @@ precio-de-la-incertidumbre/
 ├── opciones.py        # módulo: BlackScholes, BinomialTree, MonteCarlo, LongstaffSchwartz,
 │                      # precio_asiatica, precio_barrera
 ├── ejemplos/          # un script por capítulo, reproducible
-│   ├── cap04_binomial.py          ├── cap09_longstaff_schwartz.py
-│   ├── cap05_black_scholes.py     ├── cap10_cotas.py
-│   ├── cap06_griegas.py           ├── cap11_caso_mexico.py
-│   ├── cap07_montecarlo.py        ├── cap12_exoticas.py
-│   ├── cap08_americanas.py        └── cap13_opciones_reales.py
+│   ├── cap01_payoffs.py           ├── cap08_americanas.py
+│   ├── cap02_volumen.py           ├── cap09_longstaff_schwartz.py
+│   ├── cap03_valor.py             ├── cap10_cotas.py
+│   ├── cap04_binomial.py          ├── cap11_caso_mexico.py
+│   ├── cap05_black_scholes.py     ├── cap12_exoticas.py
+│   ├── cap06_griegas.py           ├── cap13_opciones_reales.py
+│   ├── cap06_heston.py
+│   └── cap07_montecarlo.py
 ├── apps/              # dashboards interactivos del libro (Streamlit)
 │   ├── app.py                     # hub: portada + navegación entre dashboards
 │   ├── dashboard_griegas.py       # P&L con cono ±1σ, escaleras de griegas, cadena (Cap. 6)

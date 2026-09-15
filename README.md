@@ -97,4 +97,5 @@ cada dashboard indica el capítulo que lo explica.
 ## Licencia y aviso
 Código bajo licencia **MIT**. Material **educativo**; no es asesoría de inversión.
 
-Autor: Liber Jaime Merlos · GitHub: [@libjai](https://github.com/libjai)
+Autor: Liber Jaime Merlos · GitHub: [@libjai](https://github.com/libjai) · Libro hermano:
+[Inversiones Sostenibles 360°](https://github.com/libjai/inversiones-sostenibles-360)
